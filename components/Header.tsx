@@ -62,11 +62,6 @@ export default function Header({ account, balance, chainOk, connecting, onConnec
         <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", justifyContent: "flex-end", minWidth: 0 }}>
           {account ? (
             <>
-              {!chainOk && (
-                <button onClick={() => switchToArc().catch(() => {})} className="btn" style={{ borderRadius: 0, borderColor: "rgba(255,90,77,0.5)", color: "var(--bad)", padding: "9px 13px", fontSize: 13 }}>
-                  Wrong network
-                </button>
-              )}
               <div style={{ position: "relative" }}>
                 <button onClick={() => setOpen((o) => !o)} className="wallet-tag">
                   <span className="pin" style={{ background: chainOk ? "var(--volt)" : "var(--bad)" }} />
@@ -88,11 +83,30 @@ export default function Header({ account, balance, chainOk, connecting, onConnec
                       </div>
                       <button className="menu-item" onClick={copy}>{copied ? "Copied ✓" : "Copy address"}</button>
                       <a className="menu-item" href={`${ARCSCAN}/address/${account}`} target="_blank" rel="noopener noreferrer" onClick={() => setOpen(false)}>View on ArcScan ↗</a>
-                      <button className="menu-item danger" onClick={() => { setOpen(false); onDisconnect(); }}>Disconnect</button>
                     </div>
                   </>
                 )}
               </div>
+
+              {/* network tag — click to switch when on the wrong chain */}
+              <button
+                className={chainOk ? "net-tag" : "net-tag bad"}
+                onClick={chainOk ? undefined : () => switchToArc().catch(() => {})}
+                title={chainOk ? "ARC Testnet" : "Wrong network — click to switch"}
+                style={chainOk ? { cursor: "default" } : undefined}
+              >
+                <span className="pin" style={{ background: chainOk ? "var(--volt)" : "var(--bad)" }} />
+                {chainOk ? "ARC · Testnet" : "Wrong net — switch"}
+              </button>
+
+              {/* explicit disconnect */}
+              <button className="disc-btn" onClick={onDisconnect} title="Disconnect wallet">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M12 3v9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                  <path d="M7.5 6.6a7 7 0 1 0 9 0" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                </svg>
+                <span className="disc-label">Disconnect</span>
+              </button>
             </>
           ) : (
             <button onClick={onConnect} disabled={connecting} className="btn btn--primary">
