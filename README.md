@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/cover.svg" alt="RepTrain — stake your streak, on ARC" width="100%">
+  <img src="docs/cover.png" alt="RepTrain — stake your streak, on ARC" width="100%">
 </p>
 
 <h1 align="center">RepTrain</h1>
