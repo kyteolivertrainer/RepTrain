@@ -103,9 +103,9 @@ a {
 }
 .label {
   font-family: 'Space Grotesk', sans-serif;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--muted);
 }
@@ -477,8 +477,8 @@ a {
   border-color: var(--volt-deep);
 }
 
-/* wallet menu item */
-.menu-item {
+/* wallet menu item — hard-edged locker rows with a volt accent bar */
+.rep-act {
   display: flex;
   align-items: center;
   gap: 9px;
@@ -486,24 +486,30 @@ a {
   padding: 11px 14px;
   background: transparent;
   border: none;
-  border-top: 1px solid var(--line);
+  border-left: 3px solid transparent;
+  border-radius: 0;
   color: var(--ink);
   font-family: 'Space Grotesk', sans-serif;
-  font-size: 13.5px;
-  font-weight: 600;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
   text-align: left;
   cursor: pointer;
   text-decoration: none;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 }
-.menu-item:hover {
+.rep-act:hover {
   background: var(--card-2);
+  border-left-color: var(--volt);
 }
-.menu-item.danger:hover {
+.rep-act.danger:hover {
   color: var(--bad);
+  border-left-color: var(--bad);
 }
 
 /* motion */
-@keyframes rise {
+@keyframes rep {
   from {
     opacity: 0;
     transform: translateY(10px);
@@ -514,7 +520,7 @@ a {
   }
 }
 .rise {
-  animation: rise 0.55s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation: rep 0.55s cubic-bezier(0.2, 0.7, 0.2, 1) both;
 }
 @keyframes pulse-dot {
   0%, 100% {

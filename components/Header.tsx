@@ -81,8 +81,8 @@ export default function Header({ account, balance, chainOk, connecting, onConnec
                         <div className="label" style={{ marginBottom: 5 }}>Wallet</div>
                         <div className="num" style={{ fontSize: 13.5, color: "var(--ink)" }}>{account.slice(0, 13)}…{account.slice(-6)}</div>
                       </div>
-                      <button className="menu-item" onClick={copy}>{copied ? "Copied ✓" : "Copy address"}</button>
-                      <a className="menu-item" href={`${ARCSCAN}/address/${account}`} target="_blank" rel="noopener noreferrer" onClick={() => setOpen(false)}>View on ArcScan ↗</a>
+                      <button className="rep-act" onClick={copy}>{copied ? "Copied ✓" : "Copy address"}</button>
+                      <a className="rep-act" href={`${ARCSCAN}/address/${account}`} target="_blank" rel="noopener noreferrer" onClick={() => setOpen(false)}>View on ArcScan ↗</a>
                     </div>
                   </>
                 )}
