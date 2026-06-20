@@ -109,8 +109,14 @@ export default function Header({ account, balance, chainOk, connecting, onConnec
               </button>
             </>
           ) : (
-            <button onClick={onConnect} disabled={connecting} className="btn btn--primary">
-              {connecting ? "Connecting…" : "Connect wallet"}
+            <button
+              type="button"
+              onClick={onConnect}
+              disabled={connecting}
+              className="btn btn--primary"
+              aria-busy={connecting}
+            >
+              {connecting ? "Strapping in…" : "Strap in"}
             </button>
           )}
         </div>

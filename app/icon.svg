@@ -1,7 +1,8 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
-  <rect width="32" height="32" rx="8" fill="#0a0d0b"/>
-  <rect x="4" y="20" width="5" height="8" rx="2.5" fill="#c8f23a" opacity="0.55"/>
-  <rect x="13.5" y="14" width="5" height="14" rx="2.5" fill="#c8f23a" opacity="0.8"/>
-  <rect x="23" y="6" width="5" height="22" rx="2.5" fill="#c8f23a"/>
-  <circle cx="25.5" cy="6" r="2.6" fill="#ff6a35"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
+  <!-- streak ring: an almost-closed loop, the gap is the day yet to be earned -->
+  <path d="M16 4.2a11.8 11.8 0 1 1-8.0 3.1" stroke="#c8f23a" stroke-width="3.4" stroke-linecap="round"/>
+  <!-- ascending rep tick rising out of the ring's centre -->
+  <path d="M11 20.5l3.4-4.6 3.1 2.6 4.2-7.2" stroke="#c8f23a" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- ember on the leading edge: the streak is alight -->
+  <circle cx="22.9" cy="9.5" r="2.7" fill="#ff6a35"/>
 </svg>

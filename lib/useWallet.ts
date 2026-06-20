@@ -1,11 +1,16 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
 import { ethers } from "ethers";
-import { ARC_RPC, ARC_CHAIN_HEX, switchToArc } from "./arcNetwork";
-import { ensureDiscovered, pickProvider, pickDetail, setChosenRdns, type Eip1193Provider } from "./wallet";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { ensureDiscovered, pickDetail, pickProvider, setChosenRdns, type Eip1193Provider } from "./wallet";
+import { ARC_CHAIN_HEX, ARC_RPC, switchToArc } from "./arcNetwork";
 
-const DISCONNECT_KEY = "reptrain.disconnected";
+// Flag we set when the user explicitly walks away from the session. Stored under
+// the same "reptrain/v1" namespace the wallet module uses for its pinned choice,
+// so a wipe of one matching prefix clears both.
+const SESSION_NS = "reptrain/v1";
+const SEVERED_FLAG = `${SESSION_NS}:session-severed`;
+const SEVERED_ON = "1";
 
 /**
  * Single source of truth for wallet state. Discovers wallets via EIP-6963
@@ -68,7 +73,7 @@ export function useWallet() {
     disconnectedRef.current = false;
     if (typeof window !== "undefined") {
       try {
-        window.localStorage.removeItem(DISCONNECT_KEY);
+        window.localStorage.removeItem(SEVERED_FLAG);
       } catch {
         /* ignore */
       }
@@ -107,7 +112,7 @@ export function useWallet() {
     disconnectedRef.current = true;
     if (typeof window !== "undefined") {
       try {
-        window.localStorage.setItem(DISCONNECT_KEY, "1");
+        window.localStorage.setItem(SEVERED_FLAG, SEVERED_ON);
       } catch {
         /* ignore */
       }
@@ -118,7 +123,7 @@ export function useWallet() {
   }, []);
 
   useEffect(() => {
-    if (typeof window !== "undefined" && window.localStorage.getItem(DISCONNECT_KEY) === "1") {
+    if (typeof window !== "undefined" && window.localStorage.getItem(SEVERED_FLAG) === SEVERED_ON) {
       disconnectedRef.current = true;
     }
     (async () => {
