@@ -1,65 +1,117 @@
-<p align="center">
-  <img src="docs/cover.png" alt="RepTrain — stake your streak, on ARC" width="100%">
-</p>
+# RepTrain
 
-<h1 align="center">RepTrain</h1>
+**Put money on it. Show up. Take it back.**
 
-<p align="center"><b>Put money on your training. Show up — or fund the people who do.</b></p>
+You already know what to do. You just don't do it — because skipping a free
+streak costs you exactly nothing. So we make it cost something.
 
-<p align="center">
-  <a href="https://reptrain-arc.vercel.app"><img src="https://img.shields.io/badge/▶_live-reptrain--arc.vercel.app-c6f24a?style=flat-square&labelColor=0c100d"></a>
-  <a href="https://testnet.arcscan.app/address/0x21d74586c0d9d8526aD4EF60Cf153Cf3D2394F07"><img src="https://img.shields.io/badge/contract-verified-c6f24a?style=flat-square&labelColor=0c100d"></a>
-  <img src="https://img.shields.io/badge/network-ARC_Testnet-ff6a3d?style=flat-square&labelColor=0c100d">
-  <img src="https://img.shields.io/badge/built_with-Next.js_·_Solidity-edf1e6?style=flat-square&labelColor=0c100d">
-</p>
+Stake your own USDC against a goal. Train your way through the window and you
+walk away with every cent back, plus a cut skimmed off everyone who didn't.
+Go quiet and let the clock run out, and that stake is no longer yours — it
+goes to the people still grinding.
+
+That's the whole sport. Read on.
 
 ---
 
-Streak apps are free, so quitting one costs you nothing — which is exactly why they don't work.
-**RepTrain** puts your own USDC on the line.
+## THE RULES
 
-Open a **pact** — a goal of N sessions inside a window — and back it with a stake. Log one session a
-day, on-chain. Finish in time and you pull your stake back **plus a slice of everyone who flaked**.
-Miss your window and your stake *becomes* that slice. Skin in the game, settled in dollars, the moment
-it happens.
+Four of them. Pin them above the bench.
 
-→ **Try it: [reptrain-arc.vercel.app](https://reptrain-arc.vercel.app)** · ARC Testnet
+1. **You don't get in for free.** Pick a number of sessions and a window of
+   days, then back it with a USDC stake. `start(goal, durationDays)` takes the
+   stake in the same call. No stake, no pact — and the goal can never be larger
+   than the window, because you only get to log once a day.
 
-## The house rules
+2. **One check-in a day. No catching up.** `checkIn()` records a single session
+   for the current UTC day and rolls your streak forward. Hit it two days in a
+   row and the streak climbs; skip a day and it snaps back to one. You cannot
+   bank Tuesday's session on Wednesday, and you cannot log twice — the day is
+   counted across your whole account, so closing one pact and opening another
+   the same afternoon buys you nothing.
 
-1. **Stake to enter.** No stake, no pact. Skin in the game or the streak doesn't mean anything.
-2. **One a day.** A session a day keeps the chain alive — miss a day and the streak resets.
-3. **Finish, get paid.** Hit your number in time and claim your stake, plus up to **half again** from the comeback pool.
-4. **Flake, fund it.** Let the window close short and your stake drops into the pot for the people who don't quit.
+3. **Reach the number, take the cash.** The moment `done` hits `goal`, call
+   `claim()`. You get your full stake back, plus a bonus equal to half your
+   stake — capped at whatever's actually sitting in the comeback pool. There is
+   no clock on claiming: a finisher can collect whenever they want.
 
-## How a pact works
+4. **The pool is built by quitters, paid to finishers.** Every forfeited stake
+   lands in the comeback pool. Every winner draws their bonus out of it. You're
+   not betting against the house. You're betting against the version of you that
+   doesn't show up.
 
-| Action | What happens on-chain |
-| --- | --- |
-| `start(goal, days)` | Locks your USDC, opens the pact. |
-| `checkIn()` | Logs one session per UTC day — grows your streak and your training calendar. |
-| `claim()` | Pays you out once you hit the goal: stake **+** a comeback bonus. |
-| `forfeit(addr)` | Settles an expired, unfinished pact. **Anyone** can call it — a keeper, a bot — and the stake feeds the pot. |
+Pick a lane to start:
 
-Your streaks, sessions and wins live on-chain. That record is your **Rep**.
+- **Starter** — 12 sessions in 30 days, 2 USDC on the line
+- **Committed** — 20 in 30, 10 USDC
+- **Beast** — 24 in 30, 25 USDC
 
-## Built right, not just fast
+Or set your own goal, window, and stake. Up to 366 days.
 
-- **One immutable contract**, money-safe by design — checks-effects-interactions, a pull-free payout
-  path, and a comeback pool that can never pay out more than it holds.
-- **Native USDC on ARC** — stakes and payouts are plain dollars. No token to buy, no approval to sign,
-  in your wallet the *same second* you claim.
-- **Forfeits sweep themselves** — settling an expired pact is one open call, so a keeper or an agent
-  can clear it and grow the pot with zero admin.
-- **Adversarially reviewed before deploy** — a 15-agent pass over the contract and frontend (weighted
-  on fund-safety) found **zero money bugs**; everything flagged was fixed pre-deploy.
-- **Source-verified** on [ArcScan](https://testnet.arcscan.app/address/0x21d74586c0d9d8526aD4EF60Cf153Cf3D2394F07).
+---
 
-## Under the hood
+## WHAT HAPPENS IF YOU QUIT
 
-`Next.js 16` · `React 19` · `ethers v6` · one `Solidity 0.8.35` contract · EIP-6963 multi-wallet ·
-**no backend** — the UI reads straight from the chain.
+Be honest about this part, because it's the engine.
 
-Contract
-[`0x21d74586c0d9d8526aD4EF60Cf153Cf3D2394F07`](https://testnet.arcscan.app/address/0x21d74586c0d9d8526aD4EF60Cf153Cf3D2394F07)
-— ARC Testnet, chain `5042002`.
+Miss your deadline with the goal unmet and your pact is dead — but it doesn't
+clean itself up out of politeness. `forfeit(address)` settles an expired,
+unfinished pact, and **anyone at all can call it**: you, a rival on the board,
+or an automated keeper sweeping the chain for stale pacts. Whoever pulls the
+trigger, the result is the same — your staked USDC drops into the comeback pool
+and becomes bonus money for the people who finished what you didn't.
+
+You don't lose your record, just your stake. Your lifetime lines — best streak,
+total sessions, pacts won, pacts flaked — stay carved into the chain. That
+ledger is the only Rep that counts here.
+
+---
+
+## WHY THIS ONLY MAKES SENSE ON ARC
+
+Look at the math of a single pact. A Starter stake is **2 USDC**. The bonus a
+finisher pulls is **half of that — a dollar, sometimes a fistful of cents** when
+the pool is thin. The entire mechanic is a swarm of tiny dollar-and-change
+movements: dozens of stakes going in, dozens of small bonuses coming out, and a
+steady drip of forfeits being raked from the quitters' side of the table to the
+finishers'.
+
+That only works if moving a couple of dollars doesn't cost a couple of dollars.
+
+Arc settles in **native USDC** — the thing you stake is the same thing you pay
+the chain in, so there's no separate gas coin to keep topped up and no swap
+between "the money" and "the fee." A two-dollar stake stays a two-dollar stake.
+Just as important: settling a dead pact has to be **cheap enough that a keeper
+will bother**. `forfeit()` is a wide-open call by design — if sweeping an expired
+pact ate more in fees than the cents of bonus it adds to the pool, nobody would
+ever run it, the pool would stall, and finishers would stop getting paid. On a
+chain where moving cents is itself nearly free, a keeper can rake the whole
+board for a rounding error, and the redistribution actually happens.
+
+Strip the micro-payments down to where they belong — pennies — and the
+accountability loop closes. That's the bet this contract is built on.
+
+---
+
+## RUN IT
+
+```bash
+npm install
+npm run dev
+```
+
+Connect a wallet on Arc testnet (chain `5042002`), fund it with test USDC, and
+open a pact. The frontend is the only moving part outside the contract — it
+reads pacts, streaks, the leaderboard, and the live pool size directly from
+chain. There is no server, no bot of ours, and no off-chain account standing
+between you and your stake. The open `forfeit()` call is the only door a keeper
+would ever need, and it's wide open for anyone.
+
+The contract source lives in `contracts/RepTrain.sol`; `scripts/compile.js`
+reproduces the build.
+
+---
+
+**Tracked on-chain:** [`0x21d74586c0d9d8526aD4EF60Cf153Cf3D2394F07`](https://testnet.arcscan.app/address/0x21d74586c0d9d8526aD4EF60Cf153Cf3D2394F07) — Arc testnet, chain 5042002, source-verified.
+
+Now stop reading and go log a session.
